@@ -21,7 +21,7 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = langchain_project
 
 # Initialize OpenAI LLM
-llm = ChatOpenAI(model="gpt-4o", openai_api_key=open_ai_apikey)
+llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=open_ai_apikey)
 
 # Load and process the web page
 loader = WebBaseLoader("https://robkerrai.blob.core.windows.net/blogdocs/EDA_Cheat_Sheet.pdf?ref=robkerr.ai")
