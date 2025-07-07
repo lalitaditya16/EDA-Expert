@@ -1,44 +1,56 @@
 import os
 import streamlit as st
+import uuid
+
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import PromptTemplate
-from langchain_core.runnables import RunnableParallel, RunnablePassthrough
+from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.output_parsers import StrOutputParser
-from langchain.memory import ConversationBufferMemory
-from langchain_core.runnables.history import RunnableWithMessageHistory
+from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableWithMessageHistory
+from langchain_core.chat_history import ChatMessageHistory
 
-
-
-# 📌 Load secrets
+# ------------------------
+# 🔐 Load API Keys from Streamlit Secrets
+# ------------------------
 open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
 langchain_api_key = st.secrets.get("LANGCHAIN_API_KEY", "")
 langchain_project = st.secrets.get("LANGCHAIN_PROJECT", "")
+
 os.environ["LANGCHAIN_API_KEY"] = langchain_api_key
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"] = langchain_project
 
-# ✅ Initialize LLM
+# ------------------------
+# 🤖 Initialize LLM
+# ------------------------
 llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=open_ai_apikey)
 
-# ✅ Load documents
+# ------------------------
+# 📄 Load and Process PDF
+# ------------------------
 loader = WebBaseLoader("https://robkerrai.blob.core.windows.net/blogdocs/EDA_Cheat_Sheet.pdf?ref=robkerr.ai")
 documents = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 docs = text_splitter.split_documents(documents)
 
+# ------------------------
+# 🧠 Create Vector Store
+# ------------------------
 embeddings = OpenAIEmbeddings(openai_api_key=open_ai_apikey)
 vectorstore = FAISS.from_documents(docs, embeddings)
 retriever = vectorstore.as_retriever()
 
-# ✅ Prompt with history
+# ------------------------
+# 📋 Prompt Template
+# ------------------------
 prompt = PromptTemplate(
-    input_variables=["history", "context", "question"],
-    template="""You are a Python EDA expert. Write code based on the context below and use slang when appropriate. Use the chat history to guide your answers.
+    input_variables=["context", "question", "history"],
+    template="""
+You're a GEN-Z style Python EDA expert. Based on the following context and chat history, answer the user's question in a friendly, slightly slangy tone.
 
 Chat History:
 {history}
@@ -52,45 +64,49 @@ Question:
 Answer:"""
 )
 
-# ✅ Chain
-chain = create_stuff_documents_chain(llm, prompt)
-parser = StrOutputParser()
+# ------------------------
+# 🔗 Create Chain
+# ------------------------
+chain = create_stuff_documents_chain(llm, prompt=prompt)
+
 retriever_chain = (
     RunnableParallel({
         "context": retriever,
-        "question": RunnablePassthrough()
-    }) | chain | parser
+        "question": RunnablePassthrough(),
+    })
+    | chain
+    | StrOutputParser()
 )
 
-# ✅ Memory per session
-if "memory" not in st.session_state:
-    st.session_state.memory = ConversationBufferMemory(return_messages=True)
+# ------------------------
+# 🧠 Set Up Per-Session Memory
+# ------------------------
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
 
-memory = st.session_state.memory
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = ChatMessageHistory()
 
 retriever_chain_with_memory = RunnableWithMessageHistory(
     retriever_chain,
-    lambda session_id: memory,  # Per-session memory
+    lambda session_id: st.session_state.chat_history,
     input_messages_key="question",
     history_messages_key="history"
 )
 
-# ✅ Streamlit UI
+# ------------------------
+# 💬 Streamlit UI
+# ------------------------
 st.title("📊 EDA Expert")
 st.subheader("Ask anything about EDA in Python")
 
 user_input = st.chat_input("Ask your question:")
 
 if user_input:
-    with st.spinner("Thinking..."):
+    with st.spinner("Thinking hard..."):
         response = retriever_chain_with_memory.invoke(
             {"question": user_input},
-            config={"configurable": {"session_id": "default"}}
+            config={"configurable": {"session_id": st.session_state.session_id}}
         )
-    st.write(response)
-
-# ✅ Optional: Show chat history in sidebar
-with st.sidebar:
-    st.subheader("Chat History")
-    for msg in memory.chat_memory.messages:
-        st.markdown(f"**{msg.type.capitalize()}:** {msg.content}")
+    st.chat_message("user").write(user_input)
+    st.chat_message("assistant").write(response)
