@@ -50,7 +50,9 @@ retriever_chain = (
         "question": RunnablePassthrough(),         # same query passed to {question}
     }) 
     | chain | parser                               # final prompt uses context + question
-)   
+)  
+st.title("EDA EXPERT")
+st.subheader("Get help from this awesome friendly bot")
 input_text = st.chat_input("Ask a question about EDA in Python:")
 if input_text:
     with st.spinner("Thinking..."):
