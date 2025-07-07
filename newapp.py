@@ -74,6 +74,10 @@ memory.chat_memory.add_user_message(input_text)
 chat_history = memory.load_memory_variables({})["history"]
 if input_text:
     with st.spinner("Cooking up some shit..."):
-        response = retriever_chain.invoke(input_text)
+         response = retriever_chain.invoke({
+            "context": retriever.invoke(input_text),  # You can optimize this too
+            "question": input_text,
+            "history": chat_history
+        })
     memory.chat_memory.add_ai_message(response)
     st.write(response)
