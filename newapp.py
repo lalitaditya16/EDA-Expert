@@ -64,6 +64,7 @@ retriever_chain = (
     RunnableParallel({
         "context": retriever,
         "question": RunnablePassthrough(),
+        
     }) | chain | parser
 )
 
@@ -77,7 +78,9 @@ if input_text:
     history = memory.load_memory_variables({})["history"]
 
     with st.spinner("Cooking up some shit..."):
+        relevant_docs = retriever.invoke(input_text)
         response = retriever_chain.invoke({
+            "content":relevant_docs,
             "question": input_text,
             "history": history
         })
