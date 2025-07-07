@@ -9,7 +9,8 @@ from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 from langchain.memory import ConversationBufferMemory
-from langchain.chains import RunnableWithMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+
 
 
 # 📌 Load secrets
