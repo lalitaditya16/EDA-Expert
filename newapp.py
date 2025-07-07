@@ -78,7 +78,6 @@ if input_text:
 
     with st.spinner("Cooking up some shit..."):
         response = retriever_chain.invoke({
-            "context": retriever.invoke(input_text),
             "question": input_text,
             "history": history
         })
