@@ -10,7 +10,8 @@ from langchain.prompts import PromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough, RunnableWithMessageHistory
-from langchain_core.chat_history import ChatMessageHistory
+from langchain.memory.chat_message_histories import ChatMessageHistory
+
 
 # ------------------------
 # 🔐 Load API Keys from Streamlit Secrets
