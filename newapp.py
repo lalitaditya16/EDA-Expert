@@ -38,7 +38,7 @@ vectorstore = FAISS.from_documents(docs, embeddings)
 # Create a retriever chain
 prompt = PromptTemplate(
     input_variables=["context", "question"],
-    template="""You are a Python EDA expert and you should write code based on the provided context when the user asks you how to do a certain task.
+    template="""You are a Python EDA expert and you should write code based on the provided context when the user asks you how to do a certain task. Talk the way GEN-Z people talk by using slang in appopriate areas and there is no need to use a formal tone.
 
 Context: {context}
 
