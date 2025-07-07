@@ -9,6 +9,9 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain.memory import ConversationBufferMemory
+
+
 
 # Streamlit Secrets (add these in your Streamlit Cloud app settings)
 open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
@@ -34,11 +37,13 @@ docs = text_splitter.split_documents(documents)
 # Create a vector store from the documents
 embeddings = OpenAIEmbeddings(openai_api_key=open_ai_apikey)
 vectorstore = FAISS.from_documents(docs, embeddings)
-
+memory = ConversationBufferMemory(return_messages=True)
 # Create a retriever chain
 prompt = PromptTemplate(
-    input_variables=["context", "question"],
-    template="""You are a Python EDA expert and you should write code based on the provided context when the user asks you how to do a certain task. Talk the way GEN-Z people talk by using slang in appopriate areas and there is no need to use a formal tone.
+    input_variables=["history","context", "question"],
+    template="""You are a Python EDA expert and you should write code based on the provided context when the user asks you how to do a certain task. Talk the way GEN-Z people talk by using slang in appopriate areas and there is no need to use a formal tone.You also have the functionality to use chat history to return relevant data
+
+Chat History: {history}
 
 Context: {context}
 
@@ -63,7 +68,12 @@ retriever_chain = (
 st.title("📊 EDA Expert")
 st.subheader("Get help from this awesome friendly bot")
 input_text = st.chat_input("Ask a question about EDA in Python:")
+memory.chat_memory.add_user_message(input_text)
+
+# Get history as string
+chat_history = memory.load_memory_variables({})["history"]
 if input_text:
     with st.spinner("Cooking up some shit..."):
         response = retriever_chain.invoke(input_text)
+    memory.chat_memory.add_ai_message(response)
     st.write(response)
