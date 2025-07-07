@@ -14,10 +14,8 @@ import streamlit as st
 
 # Load environment variables
 load_dotenv()
-os.environ["OPENAI_API_KEY"] = os.getenv("OPENAI_API_KEY")
-os.environ['LANGCHAIN_API_KEY'] = os.getenv('LANGCHAIN_API_KEY')
-os.environ['LANGCHAIN_TRACING_V2'] = 'true'
-os.environ['LANGCHAIN_PROJECT']=os.getenv('LANGCHAIN_PROJECT')
+open_ai_apikey=os.getenv("OPEN_AI_API_KEY")
+langchain_api_key=os.getenv("LANGCHAIN_API_KEY")
 # Initialize OpenAI LLM
 llm = ChatOpenAI(model="gpt-4o")
 # Load and process the web page
