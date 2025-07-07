@@ -80,7 +80,7 @@ if input_text:
     with st.spinner("Cooking up some shit..."):
         relevant_docs = retriever.invoke(input_text)
         response = chain.invoke({
-            "content":relevant_docs,
+            "context":relevant_docs,
             "question": input_text,
             "history": history
         })
