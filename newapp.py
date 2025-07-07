@@ -11,7 +11,7 @@ from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 # Streamlit Secrets (add these in your Streamlit Cloud app settings)
-open_ai_apikey = st.secrets["OPENAI_API_KEY"]
+open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
 langchain_api_key = st.secrets.get("LANGCHAIN_API_KEY", "")
 langchain_project = st.secrets.get("LANGCHAIN_PROJECT", "")
 
