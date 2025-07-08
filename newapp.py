@@ -72,10 +72,8 @@ if input_text:
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
-            context = [Document(page_content=df_summary)]
-        else:
-            # Use PDF as fallback context
-            context = [retriever.invoke(input_text)[0]]
+        context = [Document(page_content=df_summary)]
+       
 
         response = chain.invoke({"context": context, "question": input_text})
         st.write(response)
