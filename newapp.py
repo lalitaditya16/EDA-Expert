@@ -49,8 +49,8 @@ if uploaded_file:
 prompt = PromptTemplate(
     input_variables=["context", "question"],
     template="""
-You're a Gen-Z Python EDA expert. Write helpful Python code based on context.
-Use slang casually. Context is either from an uploaded dataset or EDA cheat sheet.
+You're a Gen-Z Python EDA expert. Write helpful Python code based on context and explain your code briefly.
+Use slang regularly. Use the EDA Cheatsheet as reference to give code based on the file uploaded.
 
 Context: {context}
 
