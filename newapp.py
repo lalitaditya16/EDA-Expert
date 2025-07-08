@@ -67,8 +67,8 @@ input_text = st.chat_input("Ask anything about your uploaded data or EDA concept
 if input_text:
     with st.spinner("Thinking hard 💡..."):
         # Generate CSV summary if available
-        if df is not None:
-            df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
+        
+        df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
