@@ -49,7 +49,7 @@ if uploaded_file:
 prompt = PromptTemplate(
     input_variables=["context", "question"],
     template="""
-You're a Gen-Z Python EDA expert. Write helpful Python code that essentialy is meant for the uploaded CSV file.So write the code to perform actions on dataframe created from the uploaded csv file
+You're a Gen-Z Python EDA expert. Write helpful Python code that essentialy is meant for the uploaded CSV file.So write the code to perform actions on dataframe created from the uploaded csv file and also display the output you got
 Use slang regularly.
 
 Context: {context}
