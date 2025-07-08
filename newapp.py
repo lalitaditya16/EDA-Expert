@@ -10,6 +10,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain.prompts import PromptTemplate
 from langchain_core.runnables import RunnableParallel, RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
+from langchain_core.documents import Document
 
 # --- Setup API Keys ---
 open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
@@ -71,7 +72,7 @@ if input_text:
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
-            context = df_summary
+            context = [Document(page_content=df_summary)]
         else:
             # Use PDF as fallback context
             context = retriever.invoke(input_text)[0].page_content
