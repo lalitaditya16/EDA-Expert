@@ -1,7 +1,6 @@
 import os
 import streamlit as st
 import pandas as pd
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -9,25 +8,27 @@ from langchain.prompts import PromptTemplate
 from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
-from langchain_openai import ChatOpenAI  # Still using OpenAI for LLM
 from langchain.callbacks import get_openai_callback
+from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_openai import ChatOpenAI
 
-# --- Environment Variables (for LangChain OpenAI LLM, not embeddings anymore) ---
+# --- Environment ---
 open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
-# --- LLM (still OpenAI) ---
+# --- LLM (still using GPT-3.5) ---
 llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=open_ai_apikey)
 
-# --- Load EDA Knowledge Base ---
+# --- Hugging Face Embeddings ---
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+# --- Load and Embed EDA Cheat Sheet PDF ---
 loader = WebBaseLoader("https://robkerrai.blob.core.windows.net/blogdocs/EDA_Cheat_Sheet.pdf?ref=robkerr.ai")
 documents = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 docs = text_splitter.split_documents(documents)
 
-# --- Use Ollama Embeddings ---
-embeddings = OllamaEmbeddings(model="llama3")  # Or "llama3", etc.
 vectorstore = FAISS.from_documents(docs, embeddings)
 retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
 
@@ -44,6 +45,7 @@ Question: {question}
 Answer:"""
 )
 
+# --- Chain ---
 chain = create_stuff_documents_chain(llm, prompt=prompt)
 parser = StrOutputParser()
 
