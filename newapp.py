@@ -73,6 +73,7 @@ Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
         context = [Document(page_content=df_summary)]
+        st.write(df_summary)
        
 
         response = chain.invoke({"context": context, "question": input_text})
