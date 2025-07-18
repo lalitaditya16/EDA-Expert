@@ -9,7 +9,7 @@ from langchain.chains.combine_documents import create_stuff_documents_chain
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
 from langchain.callbacks import get_openai_callback
-from langchain.embeddings import HuggingFaceHubEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
 
 # --- Environment ---
@@ -20,9 +20,9 @@ os.environ["LANGCHAIN_TRACING_V2"] = "true"
 llm = ChatGroq(model="gemma2-9b-it", api_key=groq_api_key)
 
 # --- Hugging Face Embeddings ---
-embeddings = HuggingFaceHubEmbeddings(
+embeddings = HuggingFaceEmbeddings(
     repo_id="sentence-transformers/all-MiniLM-L6-v2",
-    huggingfacehub_api_token=st.secrets["HUGGINGFACE_API_KEY"]
+   
 )
 
 # --- Load and Embed EDA Cheat Sheet PDF ---
