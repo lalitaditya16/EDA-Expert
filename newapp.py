@@ -59,16 +59,8 @@ st.subheader("Upload a CSV and ask questions")
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
 df = None
 
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.write("Here's a preview of your data:")
-    st.dataframe(df.head())
-
-input_text = st.chat_input("Ask anything about your uploaded data or EDA concepts:")
-
 if input_text:
     with st.spinner("Generating response..."):
-
         if df is not None:
             df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
 Column names: {list(df.columns)}
@@ -81,12 +73,14 @@ Missing values:\n{df.isnull().sum().to_string()}"""
             top_doc = retriever.invoke(input_text)[0]
             context = [top_doc]
 
-      
+        #  Invoke the chain and show the response
+        with get_openai_callback() as cb:
+            response = chain.invoke({"context": context, "question": input_text})
 
-        st.write("Answer:")
+        st.write("### Answer:")
         st.markdown(response)
 
-        st.write("Token Usage")
+        st.write("### Token Usage")
         st.write(f"Total tokens used: {cb.total_tokens}")
         st.write(f"Prompt tokens: {cb.prompt_tokens}")
         st.write(f"Completion tokens: {cb.completion_tokens}")
