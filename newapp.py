@@ -59,22 +59,22 @@ input_text=st.chat_input("Enter query")
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
 df = pd.read_csv(uploaded_file)
 
-if input_text:
-    with st.spinner("Generating response..."):
-        if df is not None:
-            df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
+
+if df is not None:
+    df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
-            context = [Document(page_content=df_summary)]
-            st.write("CSV Summary:")
-            st.code(df_summary)
-        else:
-            st.write("File not read correctly")
-            top_doc = retriever.invoke(input_text)[0]
-            context = [top_doc]
+    context = [Document(page_content=df_summary)]
+    st.write("CSV Summary:")
+    st.code(df_summary)
+    else:
+        st.write("File not read correctly")
+        top_doc = retriever.invoke(input_text)[0]
+        context = [top_doc]
 
-        #  Invoke the chain and show the response
+if input_text:
+    with st.spinner("Generating response..."):        #  Invoke the chain and show the response
         with get_openai_callback() as cb:
             response = chain.invoke({"context": context, "question": input_text})
 
