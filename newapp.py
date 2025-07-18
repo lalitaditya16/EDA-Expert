@@ -17,7 +17,7 @@ groq_api_key = st.secrets["GROQ_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 # --- LLM ---
-llm = ChatGroq(model="gemma-7b-it", api_key=groq_api_key)
+llm = ChatGroq(model="gemma2-9b-it", api_key=groq_api_key)
 
 # --- Hugging Face Embeddings ---
 embeddings = HuggingFaceEmbeddings(
