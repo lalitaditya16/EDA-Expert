@@ -71,6 +71,7 @@ Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
         st.success("CSV read successfully!")
         st.write("### CSV Summary:")
+        st.write(df.head())
         st.code(df_summary)
         context = [Document(page_content=df_summary)]
     except Exception as e:
