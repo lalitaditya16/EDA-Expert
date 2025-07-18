@@ -78,8 +78,7 @@ Missing values:\n{df.isnull().sum().to_string()}"""
             top_doc = retriever.invoke(input_text)[0]
             context = [top_doc]
 
-        with get_openai_callback() as cb:
-            response = chain.invoke({"context": context, "question": input_text})
+      
 
         st.write("Answer:")
         st.markdown(response)
