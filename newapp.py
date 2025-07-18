@@ -61,7 +61,6 @@ df = None
 
 
 if df is not None:
-    df=pd.read_csv(uploaded_files)
     df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
