@@ -21,7 +21,7 @@ llm = ChatGroq(model="gemma2-9b-it", api_key=groq_api_key)
 
 # --- Hugging Face Embeddings ---
 embeddings = HuggingFaceEmbeddings(
-    repo_id="sentence-transformers/all-MiniLM-L6-v2",
+    model_name="sentence-transformers/all-MiniLM-L6-v2",
 )
 
 # --- Load and Embed EDA Cheat Sheet PDF ---
