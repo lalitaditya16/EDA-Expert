@@ -1,6 +1,5 @@
 langchain
-Numpy
-Pandas
+langchain-groq
 Streamlit
 langchain_community
 python-dotenv
