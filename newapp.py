@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-
+import pandas as pd
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
