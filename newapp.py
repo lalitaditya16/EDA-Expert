@@ -57,7 +57,7 @@ st.title("EDA Expert")
 st.subheader("Upload a CSV and ask questions")
 input_text=st.chat_input("Enter query")
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
-df = None
+df = pd.read_csv(uploaded_file)
 
 if input_text:
     with st.spinner("Generating response..."):
