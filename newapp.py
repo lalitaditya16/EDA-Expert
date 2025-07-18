@@ -70,6 +70,7 @@ Missing values:\n{df.isnull().sum().to_string()}"""
             st.write("CSV Summary:")
             st.code(df_summary)
         else:
+            st.write("File not read correctly")
             top_doc = retriever.invoke(input_text)[0]
             context = [top_doc]
 
