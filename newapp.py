@@ -68,10 +68,10 @@ Missing values:\n{df.isnull().sum().to_string()}"""
     context = [Document(page_content=df_summary)]
     st.write("CSV Summary:")
     st.code(df_summary)
-    else:
-        st.write("File not read correctly")
-        top_doc = retriever.invoke(input_text)[0]
-        context = [top_doc]
+else:
+    st.write("File not read correctly")
+    top_doc = retriever.invoke(input_text)[0]
+    context = [top_doc]
 
 if input_text:
     with st.spinner("Generating response..."):        #  Invoke the chain and show the response
