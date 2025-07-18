@@ -39,7 +39,7 @@ retriever = vectorstore.as_retriever(search_kwargs={"k": 1})
 prompt = PromptTemplate(
     input_variables=["context", "question"],
     template="""
-You're a Gen-Z Python EDA expert. Write helpful Python code that works on the uploaded CSV file's dataframe (named `df`). 
+You're a Gen-Z Python EDA expert. Write helpful Python code that works on the uploaded CSV file's dataframe (named df). 
 Explain your reasoning and show the output. Keep it chill, use slang where it fits.
 
 Context: {context}
@@ -57,24 +57,24 @@ st.title("EDA Expert")
 st.subheader("Upload a CSV and ask questions")
 input_text=st.chat_input("Enter query")
 uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
-df = None
+df = pd.read_csv('uploaded_file')
 
-
-if df is not None:
-    df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
+if input_text:
+    with st.spinner("Generating response..."):
+        if df is not None:
+            df_summary = f"""This dataset has {df.shape[0]} rows and {df.shape[1]} columns.
 Column names: {list(df.columns)}
 Data types:\n{df.dtypes.to_string()}
 Missing values:\n{df.isnull().sum().to_string()}"""
-    context = [Document(page_content=df_summary)]
-    st.write("CSV Summary:")
-    st.code(df_summary)
-else:
-    st.write("File not read correctly")
-    top_doc = retriever.invoke(input_text)[0]
-    context = [top_doc]
+            context = [Document(page_content=df_summary)]
+            st.write("CSV Summary:")
+            st.code(df_summary)
+        else:
+            st.write("File not read correctly")
+            top_doc = retriever.invoke(input_text)[0]
+            context = [top_doc]
 
-if input_text:
-    with st.spinner("Generating response..."):        #  Invoke the chain and show the response
+        #  Invoke the chain and show the response
         with get_openai_callback() as cb:
             response = chain.invoke({"context": context, "question": input_text})
 
@@ -85,4 +85,5 @@ if input_text:
         st.write(f"Total tokens used: {cb.total_tokens}")
         st.write(f"Prompt tokens: {cb.prompt_tokens}")
         st.write(f"Completion tokens: {cb.completion_tokens}")
-        st.write(f"Estimated cost (USD): ${cb.total_cost:.6f}")
+        st.write(f"Estimated cost (USD): ${cb.total_cost:.6f}")  Why is the file not beinf read correctky and y is the dataframe not being made correctly
+
