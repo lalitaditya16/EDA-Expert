@@ -11,3 +11,4 @@ langchain-openai
 sentence-transformers
 langchain-huggingface
 faiss-cpu
+pandas
