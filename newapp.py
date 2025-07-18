@@ -1,6 +1,6 @@
 import os
 import streamlit as st
-import pandas as pd
+
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -10,14 +10,14 @@ from langchain_core.output_parsers import StrOutputParser
 from langchain_core.documents import Document
 from langchain.callbacks import get_openai_callback
 from langchain.embeddings import HuggingFaceEmbeddings
-from langchain_openai import ChatOpenAI
+from langchain_groq import ChatGroq
 
 # --- Environment ---
-open_ai_apikey = st.secrets["OPEN_AI_API_KEY"]
+groq_api_key = st.secrets["GROQ_API_KEY"]
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 
 # --- LLM (still using GPT-3.5) ---
-llm = ChatOpenAI(model="gpt-3.5-turbo", openai_api_key=open_ai_apikey)
+llm = ChatGroq(model="gemma2-9b-it", api_key=groq_api_key)
 
 # --- Hugging Face Embeddings ---
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
