@@ -8,7 +8,8 @@ bs4
 wikipedia
 langchain-text-splitters
 langchain-openai
-sentence-transformers
+sentence-transformers==2.7.0
 langchain-huggingface
 faiss-cpu
 pandas
+
